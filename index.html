@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+  <!--
+    This tiny inline script decides if the page should start with [data-hero] and
+    [data-reveal] elements invisible (see the "html.animate" rule in style.css).
+
+    It only adds the class when:
+      - JavaScript can run at all (obviously, since this is JavaScript)
+      - The visitor did NOT ask their device for reduced motion
+      - This is a normal page load (not the browser Back/Forward button, where content
+        should just reappear instantly)
+
+    Safety net: if the animation code in useAnimations.js does not start within 5 seconds
+    (slow network, blocked file, an error), this script removes the class again so the
+    content is never stuck invisible.
+  -->
+  <script>
+    (function () {
+      var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var isBackForward =
+        window.performance &&
+        window.performance.getEntriesByType &&
+        window.performance.getEntriesByType("navigation")[0]?.type === "back_forward";
+
+      if (!reduceMotion && !isBackForward) {
+        document.documentElement.classList.add("animate");
+        setTimeout(function () {
+          if (!window.__animationsStarted) {
+            document.documentElement.classList.remove("animate");
+          }
+        }, 5000);
+      }
+    })();
+  </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0B1220" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Fonts: Instrument Sans (headings) + IBM Plex Sans (body).
+         A <link> tag loads faster than a CSS @import. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Instrument+Sans:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Bootstrap Icons: every icon on the site comes from here (no SVG files in our own code) -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- The server replaces the line below with the page title, description, etc. -->
+    <!--app-head-->
+  </head>
+  <!-- Base page colors and font are set here with Tailwind classes (not in style.css) -->
+  <body class="bg-paper font-body text-ink antialiased">
+    <!-- The server puts the rendered page inside this div -->
+    <div id="root"><!--app-html--></div>
+    <script type="module" src="/src/entry-client.jsx"></script>
+  </body>
+</html>

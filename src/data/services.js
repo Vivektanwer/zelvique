@@ -1,0 +1,138 @@
+// The list of services. Used by the Footer, the Home page and the Services page.
+// To add a service: copy one item, change the text, and paste it into the list.
+//
+//   slug     = used in links like /services#website-design (and /contact?service=website-design)
+//   icon     = a Bootstrap Icons class name (see https://icons.getbootstrap.com), shown in the small blue box
+//   description = one short line (used on cards)
+//   what / problem / included / why = the detailed text on the Services page
+
+export const services = [
+  {
+    slug: "website-design",
+    title: "Website Design",
+    icon: "bi-palette",
+    description: "Modern, conversion-focused websites built around your business goals.",
+    what: "Website design is how your website looks and how it guides visitors. We create a clean, professional design that matches your brand and makes it easy for people to understand what you offer.",
+    problem: "A confusing or outdated design makes visitors leave before they contact you.",
+    included: [
+      "A design that fits your brand",
+      "Page layouts planned around your goals",
+      "Clear buttons and easy navigation",
+      "Designs for phone, tablet and computer",
+      "Your review and feedback before we build",
+    ],
+    why: "People judge a business in seconds. A clear, trustworthy design builds confidence and helps visitors take the next step.",
+  },
+  {
+    slug: "website-development",
+    title: "Website Development",
+    icon: "bi-code-slash",
+    description: "Fast, secure websites built with clean code that is easy to grow.",
+    what: "Website development turns the design into a working website. We build it with clean, modern code so it is fast, secure and easy to update.",
+    problem: "Slow, broken or hard-to-edit websites cost you visitors and waste your time.",
+    included: [
+      "Clean, modern code",
+      "Contact forms that send enquiries straight to you",
+      "Search-friendly page structure, titles and descriptions",
+      "Testing on real devices and browsers",
+      "Help with launching your website",
+    ],
+    why: "A well-built website loads quickly, stays reliable and gives you a strong base to grow on.",
+  },
+  {
+    slug: "website-redesign",
+    title: "Website Redesign",
+    icon: "bi-arrow-repeat",
+    description: "A fresh look and a better structure for a website that no longer works for you.",
+    what: "A website redesign gives your existing website a new look, a clearer structure and better content, so it matches where your business is today.",
+    problem: "Your website looks old, loads slowly or no longer brings you enquiries.",
+    included: [
+      "A review of your current website",
+      "A new design and page structure",
+      "Clearer text and calls to action",
+      "Mobile and speed improvements",
+      "Careful handling of your existing pages and links",
+    ],
+    why: "Your website is often the first thing a customer sees. An outdated site can make a good business look less trustworthy.",
+  },
+  {
+    slug: "responsive-mobile-optimization",
+    title: "Responsive / Mobile Optimization",
+    icon: "bi-phone",
+    description: "Websites that look and work great on phones, tablets and desktops.",
+    what: "Responsive design makes your website adjust to any screen size, so it is easy to read and use on phones, tablets and computers.",
+    problem: "Tiny text, broken layouts and hard-to-tap buttons make mobile visitors leave.",
+    included: [
+      "Layouts that adapt to every screen size",
+      "Buttons and menus that are easy to tap",
+      "Text that is comfortable to read",
+      "Speed improvements for mobile visitors",
+      "Testing on real phones and tablets",
+    ],
+    why: "Many people visit websites on their phones. If your site is hard to use on mobile, you lose customers.",
+  },
+  {
+    slug: "ui-ux-improvement",
+    title: "UI/UX Improvement",
+    icon: "bi-vector-pen",
+    description: "Clearer layouts and simpler journeys that help visitors take action.",
+    what: "UI/UX improvement makes your website easier to use. We look at how visitors move through your pages and remove anything that confuses or slows them down.",
+    problem: "Visitors arrive but do not know where to click, so they leave without contacting you.",
+    included: [
+      "A review of your pages and visitor journeys",
+      "Simpler navigation and page layouts",
+      "Clearer buttons and forms",
+      "Better spacing and readability",
+      "Accessibility improvements",
+    ],
+    why: "Small changes in layout and wording can make it much easier for visitors to become customers.",
+  },
+  {
+    slug: "website-performance-optimization",
+    title: "Performance Optimization",
+    icon: "bi-speedometer2",
+    description: "Faster load times for happier visitors and better search results.",
+    what: "Performance optimization makes your website load faster. We reduce image sizes, clean up code and improve how your pages are delivered.",
+    problem: "Slow websites frustrate visitors and can hurt your position in search results.",
+    included: [
+      "A speed check of your current website",
+      "Image and font optimization",
+      "Cleaner, lighter code",
+      "Improvements to Core Web Vitals",
+      "A clear before and after comparison",
+    ],
+    why: "Fast websites keep visitors happy, and search engines prefer them.",
+  },
+  {
+    slug: "digital-marketing",
+    title: "Digital Marketing",
+    icon: "bi-graph-up-arrow",
+    description: "Strategies that help businesses reach their audience and generate opportunities.",
+    what: "Digital marketing helps the right people find your business online. We plan simple, focused campaigns and improve how visible your website is in search.",
+    problem: "You have a website, but not enough of the right people are visiting it.",
+    included: [
+      "Goal and audience planning",
+      "Search engine optimization (SEO) basics",
+      "Content and campaign ideas",
+      "Tracking of visits and enquiries",
+      "Regular reports in plain language",
+    ],
+    why: "A great website needs visitors. Marketing brings the right people to it and turns attention into enquiries.",
+  },
+  {
+    slug: "social-media-marketing",
+    title: "Social Media Marketing",
+    icon: "bi-share",
+    description: "Consistent, on-brand social content that builds trust and brings people to your site.",
+    what: "Social media marketing builds your brand and connects you with customers on the platforms they already use.",
+    problem: "Your social pages are quiet or inconsistent, and they do not send people to your website.",
+    included: [
+      "A content plan that fits your brand",
+      "Posts and graphics that look consistent",
+      "Links that send people to your website",
+      "A simple monthly review of what works",
+      "Advice on which platforms to use",
+    ],
+    why: "Regular, consistent posts build trust, keep your business in people's minds and bring new visitors to your site.",
+  },
+];

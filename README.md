@@ -200,3 +200,5 @@ To change the wait time, edit `REDIRECT_SECONDS` at the top of `src/pages/ThankY
 
 To check the real numbers for your own build, run `npm run build && npm start`, then test a page
 with Chrome DevTools' **Lighthouse** tab (Performance) or https://pagespeed.web.dev.
+#   z e l v i q u e  
+ 

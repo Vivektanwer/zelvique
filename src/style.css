@@ -1,0 +1,51 @@
+/* This file holds ONLY colors and fonts.
+   Everything else (layout, spacing, animation) uses Tailwind classes in the components. */
+
+/* Required line: turns Tailwind on. */
+@import "tailwindcss";
+
+@theme {
+  /* Remove Tailwind's default colors so only Zelvique colors can be used */
+  --color-*: initial;
+
+  /* ---- Two brand colors ---- */
+  --color-brand: #387dea;        /* Zelvique Blue: main color (fixed) */
+  --color-brand-dark: #2a62c4;   /* Darker Zelvique Blue: hover + small blue text (better contrast) */
+  --color-brand-soft: #e7effd;   /* Very light Zelvique Blue: icon backgrounds */
+  --color-accent: #f5a83c;       /* Amber Signal: use sparingly for key buttons */
+  --color-accent-dark: #e39a2d;  /* Amber hover */
+
+  /* ---- Neutrals (supporting colors) ---- */
+  --color-ink: #0e1116;          /* Main text */
+  --color-ink-soft: #454b57;     /* Secondary text */
+  --color-line: #e4e7ed;         /* Borders and dividers */
+  --color-paper: #f7f9fc;        /* Page background */
+  --color-navy: #0b1220;         /* Dark sections (footer, CTA) */
+  --color-white: #ffffff;
+
+  /* ---- Error color: only for form error messages ---- */
+  --color-danger: #b42318;
+
+  /* ---- Fonts ---- */
+  --font-heading: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* These two rules make GSAP's scroll/entrance animations possible without a "flash":
+   elements start invisible only once JavaScript is ready to animate them (the "animate"
+   class on <html>, added by a tiny script in index.html). If GSAP fails to load or
+   JavaScript is off, index.html removes the class and everything shows normally.
+   This is layout logic for the animation system, not a color or a font, so it lives here
+   instead of as a Tailwind class repeated on every page. */
+html.animate [data-hero],
+html.animate [data-reveal] {
+  opacity: 0;
+}
+
+/* Respect the visitor's OS setting: never hide content if they asked for less motion */
+@media (prefers-reduced-motion: reduce) {
+  html.animate [data-hero],
+  html.animate [data-reveal] {
+    opacity: 1;
+  }
+}
