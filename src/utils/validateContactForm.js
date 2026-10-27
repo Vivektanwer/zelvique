@@ -5,7 +5,10 @@
 // This file uses no browser code, so the server (Phase 8) can use the same rules.
 // The server MUST check again, because anyone can send fake data straight to the server.
 
-export function validateContactForm(values) {
+// "validServices" is an optional list of allowed service values (for example the service
+// slugs from data/services.js, plus "not-sure"). Pass it so a stranger cannot send the
+// server a made-up service name. If you do not pass it, only "is something selected?" is checked.
+export function validateContactForm(values, validServices) {
   const errors = {};
 
   // Turn every value into trimmed text so missing values do not crash the checks
@@ -13,6 +16,7 @@ export function validateContactForm(values) {
   const email = String(values.email ?? "").trim();
   const phone = String(values.phone ?? "").trim();
   const company = String(values.company ?? "").trim();
+  const service = String(values.service ?? "").trim();
   const message = String(values.message ?? "").trim();
 
   // Name
@@ -44,14 +48,15 @@ export function validateContactForm(values) {
     errors.company = "The company name is too long. Please shorten it.";
   }
 
-  // Message
-  if (!message) {
-    errors.message = "Please tell us about your project.";
-  } else if (message.length < 10) {
-    errors.message = "Please write at least a few words (10 characters) about your project.";
-  } else if (message.length > 2000) {
-    errors.message = "Your message is too long. Please keep it under 2000 characters.";
+  // Service: required, and (when we were given the list) must be one of the real options
+  if (!service) {
+    errors.service = "Please choose a service.";
+  } else if (validServices && !validServices.includes(service)) {
+    errors.service = "Please choose a service from the list.";
   }
+
+  // Message is optional, with no length limit — any amount of text is accepted,
+  // including leaving it empty.
 
   return errors;
 }
