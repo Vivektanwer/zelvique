@@ -25,6 +25,10 @@ function cleanLine(value) {
   return String(value ?? "").replace(/[\r\n]+/g, " ").trim();
 }
 
+// The real options in the "Service Interested In" dropdown, used to check the chosen value
+// (must match the list built in src/sections/contact/ContactForm.jsx)
+const validServices = [...services.map((service) => service.slug), "not-sure"];
+
 // The service is sent as a short name (slug). We turn it into the real title.
 // Unknown values are ignored, so nobody can send us strange text here.
 function getServiceLabel(slug) {
@@ -61,7 +65,7 @@ export async function handleContactForm(req, res) {
     }
 
     // 2. Check the data again
-    const errors = validateContactForm(body);
+    const errors = validateContactForm(body, validServices);
     if (Object.keys(errors).length > 0) {
       return res.status(400).json({
         message: "Please check the form and try again.",
