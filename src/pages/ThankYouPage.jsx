@@ -12,7 +12,7 @@ import Button from "../components/Button.jsx";
 import Container from "../components/Container.jsx";
 
 // How long to wait before leaving automatically
-const REDIRECT_SECONDS = 5;
+const REDIRECT_SECONDS = 20;
 
 export default function ThankYouPage() {
   const navigate = useNavigate();
