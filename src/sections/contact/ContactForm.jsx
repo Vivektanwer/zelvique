@@ -33,6 +33,9 @@ const emptyForm = {
 // The order of the fields (used to focus the first field with an error)
 const fieldOrder = ["name", "email", "phone", "company", "service", "message"];
 
+// The real options in the "Service Interested In" dropdown, used to check the chosen value
+const validServices = [...services.map((service) => service.slug), "not-sure"];
+
 export default function ContactForm({ startingService }) {
   const navigate = useNavigate();
 
@@ -63,7 +66,7 @@ export default function ContactForm({ startingService }) {
     if (status === "submitting") return;
 
     // Step 1: check the values
-    const validationErrors = validateContactForm(values);
+    const validationErrors = validateContactForm(values, validServices);
     setErrors(validationErrors);
     setErrorMessage("");
 
@@ -178,7 +181,7 @@ export default function ContactForm({ startingService }) {
         </div>
 
         {/* Service */}
-        <FormField id="contact-service" label="Service Interested In" error={errors.service}>
+        <FormField id="contact-service" label="Service Interested In" required error={errors.service}>
           <select
             id="contact-service"
             name="service"
@@ -197,13 +200,12 @@ export default function ContactForm({ startingService }) {
           </select>
         </FormField>
 
-        {/* Message */}
-        <FormField id="contact-message" label="Message" required error={errors.message}>
+        {/* Message (optional, no length limit — any amount of text is fine) */}
+        <FormField id="contact-message" label="Message" error={errors.message}>
           <textarea
             id="contact-message"
             name="message"
             rows={5}
-            maxLength={2000}
             value={values.message}
             onChange={handleChange}
             placeholder="Tell us about your business and what you would like to achieve."
