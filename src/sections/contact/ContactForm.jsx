@@ -15,7 +15,9 @@ import Button from "../../components/Button.jsx";
 import FormField, { getInputClasses } from "../../components/FormField.jsx";
 import { site } from "../../data/site.js";
 import { services } from "../../data/services.js";
+import { countries, defaultCountryCode } from "../../data/countries.js";
 import { validateContactForm } from "../../utils/validateContactForm.js";
+import { cleanPhoneInput, phoneRuleText } from "../../utils/cleanPhoneInput.js";
 import { sendContactForm } from "../../utils/sendContactForm.js";
 
 // The values of an empty form.
@@ -24,6 +26,7 @@ const emptyForm = {
   name: "",
   email: "",
   phone: "",
+  country: defaultCountryCode, // the country code chosen next to the phone number
   company: "",
   service: "",
   message: "",
@@ -49,14 +52,32 @@ export default function ContactForm({ startingService }) {
   // The message shown when the server has a problem
   const [errorMessage, setErrorMessage] = useState("");
 
+  // The country chosen in the dropdown. Its rules decide what the phone field accepts.
+  const selectedCountry = countries.find((item) => item.code === values.country) || countries[0];
+
   // Runs every time the visitor types in a field
   function handleChange(event) {
     const { name, value } = event.target;
+
+    // The phone field only accepts what can be a valid number: digits only, no more than the
+    // allowed length, and a correct first digit. Anything else is ignored, so the field simply
+    // keeps what it had (the wrong key does nothing). See utils/cleanPhoneInput.js.
+    if (name === "phone") {
+      const cleaned = cleanPhoneInput(value, selectedCountry);
+      if (cleaned === null) return;
+
+      setValues({ ...values, phone: cleaned });
+      if (errors.phone) setErrors({ ...errors, phone: undefined });
+      return;
+    }
+
     setValues({ ...values, [name]: value });
 
-    // Remove the error of this field as soon as the visitor starts fixing it
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: undefined });
+    // Remove the error of this field as soon as the visitor starts fixing it.
+    // The phone error also belongs to the country dropdown (the rules depend on the country).
+    const errorKey = name === "country" ? "phone" : name;
+    if (errors[errorKey]) {
+      setErrors({ ...errors, [errorKey]: undefined });
     }
   }
 
@@ -141,24 +162,49 @@ export default function ContactForm({ startingService }) {
           </FormField>
         </div>
 
-        {/* Phone + Company */}
-        <div className="flex flex-col gap-5 md:flex-row">
-          <FormField id="contact-phone" label="Phone" required error={errors.phone} className="md:flex-1">
+        {/* Phone: choose a country code, then type the number without it.
+            It gets its own full-width row so the dropdown and the number both have room. */}
+        <FormField id="contact-phone" label="Phone" required error={errors.phone}>
+          <div className="flex">
+            <select
+              name="country"
+              aria-label="Country code"
+              value={values.country}
+              onChange={handleChange}
+              className={`w-24 shrink-0 rounded-l-xl border border-r-0 bg-white py-3 pl-3 pr-1 text-base text-ink transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-dark ${
+                errors.phone ? "border-danger" : "border-line hover:border-ink-soft"
+              }`}
+            >
+              {countries.map((country) => (
+                <option key={country.code} value={country.code}>
+                  {country.dial}
+                </option>
+              ))}
+            </select>
             <input
               id="contact-phone"
               name="phone"
               type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              maxLength={25}
+              inputMode="numeric"
+              autoComplete="tel-national"
               value={values.phone}
               onChange={handleChange}
-              placeholder="+91 98765 43210"
-              className={getInputClasses(errors.phone)}
+              placeholder="Mobile number"
+              className={`min-w-0 flex-1 rounded-r-xl border bg-white px-4 py-3 text-base text-ink placeholder:text-ink-soft/70 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-dark ${
+                errors.phone ? "border-danger" : "border-line hover:border-ink-soft"
+              }`}
               {...errorProps("phone")}
+              aria-describedby={errors.phone ? "contact-phone-error" : "contact-phone-hint"}
             />
-          </FormField>
+          </div>
+          {/* Tells the visitor the rule, so it is clear why some keys do nothing */}
+          <p id="contact-phone-hint" className="text-sm text-ink-soft">
+            {phoneRuleText(selectedCountry)}
+          </p>
+        </FormField>
 
+        {/* Company + Service */}
+        <div className="flex flex-col gap-5 md:flex-row">
           <FormField
             id="contact-company"
             label="Company / Business Name"
@@ -178,27 +224,32 @@ export default function ContactForm({ startingService }) {
               {...errorProps("company")}
             />
           </FormField>
-        </div>
 
-        {/* Service */}
-        <FormField id="contact-service" label="Service Interested In" required error={errors.service}>
-          <select
+          <FormField
             id="contact-service"
-            name="service"
-            value={values.service}
-            onChange={handleChange}
-            className={getInputClasses(errors.service)}
-            {...errorProps("service")}
+            label="Service Interested In"
+            required
+            error={errors.service}
+            className="md:flex-1"
           >
-            <option value="">Select a service</option>
-            {services.map((service) => (
-              <option key={service.slug} value={service.slug}>
-                {service.title}
-              </option>
-            ))}
-            <option value="not-sure">Not sure yet</option>
-          </select>
-        </FormField>
+            <select
+              id="contact-service"
+              name="service"
+              value={values.service}
+              onChange={handleChange}
+              className={getInputClasses(errors.service)}
+              {...errorProps("service")}
+            >
+              <option value="">Select a service</option>
+              {services.map((service) => (
+                <option key={service.slug} value={service.slug}>
+                  {service.title}
+                </option>
+              ))}
+              <option value="not-sure">Not sure yet</option>
+            </select>
+          </FormField>
+        </div>
 
         {/* Message (optional, no length limit — any amount of text is fine) */}
         <FormField id="contact-message" label="Message" error={errors.message}>
