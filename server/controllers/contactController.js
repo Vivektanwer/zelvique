@@ -16,6 +16,7 @@
 
 import { validateContactForm } from "../../src/utils/validateContactForm.js";
 import { services } from "../../src/data/services.js";
+import { countries, defaultCountryCode } from "../../src/data/countries.js";
 import { submitLeadToAppsScript } from "../services/appsScriptService.js";
 import { adminEmailContent, customerEmailContent } from "../utils/emailTemplates.js";
 import { getDateAndTime } from "../utils/dateTime.js";
@@ -37,6 +38,23 @@ function getServiceLabel(slug) {
   return service ? service.title : "Not specified";
 }
 
+// The form only collects the digits (already checked by validateContactForm). We add the
+// chosen country's code here, so emails and the sheet show where the number is from,
+// for example "+91 98765 43210" or "+44 7123456789". If a country has "groups" in
+// data/countries.js, the digits are spaced like that.
+function formatPhone(countryCode, digits) {
+  const country = countries.find((item) => item.code === (countryCode || defaultCountryCode));
+  if (!country.groups) return `${country.dial} ${digits}`;
+
+  const parts = [];
+  let position = 0;
+  for (const size of country.groups) {
+    parts.push(digits.slice(position, position + size));
+    position += size;
+  }
+  return `${country.dial} ${parts.join(" ")}`;
+}
+
 // Builds the cleaned lead information
 function buildLead(body) {
   const { date, time, timeZone } = getDateAndTime(new Date(), process.env.TIMEZONE);
@@ -47,7 +65,7 @@ function buildLead(body) {
     timeZone,
     name: cleanLine(body.name),
     email: cleanLine(body.email),
-    phone: cleanLine(body.phone),
+    phone: formatPhone(body.country, cleanLine(body.phone)),
     company: cleanLine(body.company),
     service: getServiceLabel(body.service),
     message: String(body.message ?? "").trim(),
