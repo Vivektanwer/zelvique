@@ -5,6 +5,8 @@
 // This file uses no browser code, so the server (Phase 8) can use the same rules.
 // The server MUST check again, because anyone can send fake data straight to the server.
 
+import { countries, defaultCountryCode } from "../data/countries.js";
+
 // "validServices" is an optional list of allowed service values (for example the service
 // slugs from data/services.js, plus "not-sure"). Pass it so a stranger cannot send the
 // server a made-up service name. If you do not pass it, only "is something selected?" is checked.
@@ -35,12 +37,31 @@ export function validateContactForm(values, validServices) {
     errors.email = "Please enter a valid email address.";
   }
 
-  // Phone: numbers, spaces, + - ( ) are allowed. Between 7 and 15 digits.
-  const phoneDigits = phone.replace(/\D/g, "");
-  if (!phone) {
+  // Phone: the visitor picks a country code and types the number WITHOUT it.
+  // The rules for each country live in data/countries.js. For India they are:
+  //   1. Exactly 10 digits — not fewer, not more
+  //   2. The first digit must be 6, 7, 8 or 9 (numbers starting with 0-5 are not valid)
+  // If no country is sent we use the default one, so an older form still works.
+  const country = countries.find((item) => item.code === (values.country || defaultCountryCode));
+
+  if (!country) {
+    errors.phone = "Please choose a country code.";
+  } else if (!phone) {
     errors.phone = "Please enter your phone number.";
-  } else if (!/^[+0-9\s\-()]+$/.test(phone) || phoneDigits.length < 7 || phoneDigits.length > 15) {
-    errors.phone = "Please enter a valid phone number.";
+  } else if (!/^\d+$/.test(phone)) {
+    errors.phone = `Please enter digits only. No spaces, dashes or ${country.dial} (it is already added).`;
+  } else if (!country.firstDigits && phone.startsWith("0")) {
+    errors.phone = "Please enter the number without the leading 0.";
+  } else if (phone.length < country.minDigits || phone.length > country.maxDigits) {
+    const lengthText =
+      country.minDigits === country.maxDigits
+        ? `exactly ${country.maxDigits} digits`
+        : `between ${country.minDigits} and ${country.maxDigits} digits`;
+    errors.phone = `Phone number must be ${lengthText}.`;
+  } else if (country.firstDigits && !country.firstDigits.includes(phone[0])) {
+    // "6789" -> "6, 7, 8 or 9"
+    const allowed = country.firstDigits.split("").join(", ").replace(/, (\d)$/, " or $1");
+    errors.phone = `Phone number must start with ${allowed}.`;
   }
 
   // Company is optional, but not too long
