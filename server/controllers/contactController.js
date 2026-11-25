@@ -33,7 +33,7 @@ const validServices = [...services.map((service) => service.slug), "not-sure"];
 // The service is sent as a short name (slug). We turn it into the real title.
 // Unknown values are ignored, so nobody can send us strange text here.
 function getServiceLabel(slug) {
-  if (slug === "not-sure") return "Not sure yet";
+  if (slug === "not-sure") return "Other / Not sure";
   const service = services.find((item) => item.slug === slug);
   return service ? service.title : "Not specified";
 }
