@@ -246,7 +246,7 @@ export default function ContactForm({ startingService }) {
                   {service.title}
                 </option>
               ))}
-              <option value="not-sure">Not sure yet</option>
+              <option value="not-sure">Other</option>
             </select>
           </FormField>
         </div>
